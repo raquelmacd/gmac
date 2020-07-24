@@ -25,12 +25,12 @@
   	}
 
   	//verificar se existe um cadastro com este nome
-  	$sql = "select id from uuuu 
-  		where nome = ? and id <> ? limit 1";
+  	$sql = "select codigo from colaborador 
+  		where login = ? and codigo <> ? limit 1";
   	//usar o pdo / prepare para executar o sql
   	$consulta = $pdo->prepare($sql);
   	//passando o parametro
-  	$consulta->bindParam(1, $nome);
+  	$consulta->bindParam(1, $login);
   	$consulta->bindParam(2, $id);
   	//executar o sql
   	$consulta->execute();
@@ -38,8 +38,8 @@
   	$dados = $consulta->fetch(PDO::FETCH_OBJ);
 
   	//verificar se esta vazio, se tem algo é pq existe um registro com o mesmo nome
-  	if ( !empty ( $dados->id ) ) {
-  		echo '<script>alert("Já existe uma editora registrada com este nome ");history.back();</script>';
+  	if ( !empty ( $dados->codigo ) ) {
+  		echo '<script>alert("Já existe um usuario com este nome ");history.back();</script>';
   		exit;
   	}
 
@@ -47,22 +47,24 @@
   	//se o id estiver preenchido - update
   	if ( empty ( $id ) ) {
   		//inserir os dados no banco
-  		$sql = "insert into usuario (nome, email, login,senha,foto,ativo)
-  		values( ?,?,?,?,'foto.png','S' )";
+  		$sql = "insert into colaborador (nome, login,senha, email, situacao_codigo)
+  		values( ?,?,?,?,1 )";
   		$consulta = $pdo->prepare($sql);
   		$consulta->bindParam(1, $nome);
-  		$consulta->bindParam(2, $email);
-        $consulta->bindParam(3, $login);
-        $consulta->bindParam(4, $senha);    
+  		$consulta->bindParam(2, $login);
+        $consulta->bindParam(3, $senha);
+        $consulta->bindParam(4, $email);    
 
   	} else {
   		//atualizar os dados  	
-  		$sql = "update uuuu set nome = ?, 
-  		site = ? where id = ? limit 1";	
+  		$sql = "update colaborador set nome = :nome, login = :login, senha = :senha, email = :email , situacao_codigo = 1 WHERE codigo = :codigo limit 1";	
   		$consulta = $pdo->prepare($sql);
-  		$consulta->bindParam(1, $nome);
-  		$consulta->bindParam(2, $site);
-  		$consulta->bindParam(3, $id);
+  		$consulta->bindParam(":nome", $nome);
+  		$consulta->bindParam(":login", $login);
+        $consulta->bindParam(":senha", $senha);
+        $consulta->bindParam(":email", $email);
+        $consulta->bindParam(":codigo", $id);
+        
   	}
   	//executar e verificar se deu certo
   	if ( $consulta->execute() ) {

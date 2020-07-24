@@ -8,24 +8,31 @@
   if ( $_POST ) {
 
   	//recuperar os dados do formulario
-  	$id = $tipo = $descricao ="";
+  	$id  = $descricao = $valor = $icone ="";
 
   	foreach ($_POST as $key => $value) {
   		//guardar as variaveis
   		$$key = trim ( $value );
   		//$id
   	}
+      //print_r($_POST);
 
   	//validar os campos - em branco
-  	if ( empty ( $tipo ) ) {
+  	if ( empty ( $descricao ) ) {
   		echo '<script>alert("Preencha o tipo");history.back();</script>';
+  		exit;
+  	}else if ( empty ( $valor ) ) {
+  		echo '<script>alert("Preencha o valor");history.back();</script>';
+  		exit;
+  	} else if ( empty ( $icone ) ) {
+  		echo '<script>alert("Selecione o icone");history.back();</script>';
   		exit;
   	}
 
 
   	//verificar se existe um cadastro com este tipo
-  	$sql = "select id from servico 
-  		where tipo = ? and id <> ? limit 1";
+  	$sql = "select codigo from servico 
+  		where descricao = ? and codigo <> ? limit 1";
   	//usar o pdo / prepare para executar o sql
   	$consulta = $pdo->prepare($sql);
   	//passando o parametro
@@ -46,20 +53,21 @@
   	//se o id estiver preenchido - update
   	if ( empty ( $id ) ) {
   		//inserir os dados no banco
-  		$sql = "insert into servico (tipo, descricao,icone)
-  		values( ?,?,? )";
+  		$sql = "insert into servico (descricao, valor, icone)
+  		values(?, ?, ?)";
   		$consulta = $pdo->prepare($sql);
-  		$consulta->bindParam(1, $tipo);
-  		$consulta->bindParam(2, $descricao);
-        $consulta->bindParam(3,$icone);
+  		$consulta->bindParam(1, $descricao);
+        $consulta->bindParam(2, $valor);
+        $consulta->bindParam(3, $icone);
 
   	} else {
   		//atualizar os dados  	
-  		$sql = "update servico set tipo = ?, descricao = ?where id = ? limit 1";	
+  		$sql = "update servico set descricao = ?, valor = ?, icone = ? where codigo = ? limit 1";	
   		$consulta = $pdo->prepare($sql);
-  		$consulta->bindParam(1, $tipo);
-        $consulta->bindParam(2,$descricao);
-  		$consulta->bindParam(3, $id);
+  		$consulta->bindParam(1, $descricao);
+        $consulta->bindParam(2, $valor);
+        $consulta->bindParam(3, $icone);
+  		$consulta->bindParam(4, $id);
   	}
   	//executar e verificar se deu certo
   	if ( $consulta->execute() ) {

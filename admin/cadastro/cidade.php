@@ -14,7 +14,7 @@
   if ( !empty ( $id ) ) {
   	//selecionar os dados do banco
   	$sql = "select * from cidade
-  		where id = ? limit 1";
+  		where codigo = ? limit 1";
   	$consulta = $pdo->prepare($sql);
   	$consulta->bindParam(1, $id); 
   	//$id - linha 255 do index.php
@@ -22,7 +22,7 @@
   	$dados  = $consulta->fetch(PDO::FETCH_OBJ);
 
   	//separar os dados
-  	$id 	= $dados->id;
+  	$id 	= $dados->codigo;
   	$cidade = $dados->cidade;
     $estado = $dados->estado;
 
@@ -44,9 +44,14 @@
 
 		<label for="cidade">Cidade</label>
 		<input type="text" name="cidade" id="cidade" class="form-control" required	data-parsley-required-message="Preencha este campo, por favor"	value="<?=$cidade;?>">
-        
+        <?php
+            $r = " required ";
+            if(!empty($id)) $r = "";
+        ?>
         <label for="estado">Estado</label>
-        <input list="estados" name="estado" id="estado" class="form-control" required placeholder="<?=$estado;?>">
+        <input list="estados" type="text" name="estado" id="estado" class="form-control" <?=$r;?>
+         placeholder="<?=$estado;?>">
+        
         <datalist id="estados">
         <?php
             $sql = "select distinct estado from cidade";

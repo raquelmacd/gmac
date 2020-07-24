@@ -19,31 +19,28 @@
 				<td>ID</td>
 				<td>Nome do Usuário</td>
 				<td>Email</td>
-				<td>Foto</td>
                 <td>Opções</td>
 			</tr>
 		</thead>
 		<tbody>
 			<?php
 				//buscar os servicos alfabeticamente
-				$sql = "select * from usuario where ativo= 'S'
-				order by id";
+				$sql = "select * from colaborador where situacao_codigo = 1	order by codigo";
 				$consulta = $pdo->prepare($sql);
 				$consulta->execute();
 
 				while ( $dados = $consulta->fetch(PDO::FETCH_OBJ) ) {
 					//separar os dados
-					$id 	= $dados->id;
+					$id 	= $dados->codigo;
 					$nome 	= $dados->nome;
                     $email = $dados->email;
-                    $foto = $dados->foto;
+
 
 					//mostrar na tela
 					echo '<tr>
 						<td>'.$id.'</td>
 						<td>'.$nome.'</td>
 						<td>'.$email.'</td>
-                        <td><i class="'.$foto.'" style="104px"></i></td>
                         <td>
 							<a href="cadastro/usuario/'.$id.'" class="btn btn-success btn-sm">
 								<i class="fas fa-pencil-alt"></i>

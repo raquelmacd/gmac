@@ -17,8 +17,8 @@
 		<thead>
 			<tr>
 				<td>ID</td>
-				<td>Tipo de Serviço</td>
                 <td>Descrição do Serviço</td>
+                <td>Valor</td>
                 <td>Icone</td>
 				<td>Opções</td>
 			</tr>
@@ -26,23 +26,23 @@
 		<tbody>
 			<?php
 				//buscar os servicos alfabeticamente
-				$sql = "select * from servico where status= 'S'
-				order by id";
+				$sql = "select * from servico order by codigo";
 				$consulta = $pdo->prepare($sql);
 				$consulta->execute();
 
 				while ( $dados = $consulta->fetch(PDO::FETCH_OBJ) ) {
 					//separar os dados
-					$id 	= $dados->id;
-					$tipo 	= $dados->tipo;
+					$id 	= $dados->codigo;
                     $descricao = $dados->descricao;
                     $icone = $dados->icone;
+                    $valor = number_format($dados->valor,2,",",".");
+                    
 
 					//mostrar na tela
 					echo '<tr>
 						<td>'.$id.'</td>
-						<td>'.$tipo.'</td>
 						<td>'.$descricao.'</td>
+                        <td> R$'.$valor.'</td>
                         <td><i class="'.$icone.'" style="104px"></i></td>
                         <td>
 							<a href="cadastro/servico/'.$id.'" class="btn btn-success btn-sm">

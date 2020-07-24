@@ -133,8 +133,8 @@
         <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Processos:</h6>
-              <a class="collapse-item" href="cadastro/ordem">Ordem de Serviço</a>
-              <a class="collapse-item" href="cadastro/venda">Venda</a>
+              <a class="collapse-item" href="listar/ordem">Ordem de Serviço</a>
+              <a class="collapse-item" href="cadastro/orcamento">Orçamento</a>
 
           </div>
         </div>
@@ -187,39 +187,48 @@
 
         <!-- Topbar Navbar -->
           <ul class="navbar-nav ml-auto">
-
+        <?php
+            $sql = "SELECT max(codigo) as registros FROM mensagem WHERE leitura = 'N'" ;
+            $consulta = $pdo->prepare($sql);
+            $consulta->execute();
+            $mensagens = $consulta->fetch(PDO::FETCH_OBJ);
+    ?>
             <!-- Nav Item - Messages -->
             <li class="nav-item dropdown no-arrow mx-1">
               <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-envelope fa-fw"></i>
                 <!-- Counter - Messages -->
-                  <?php 
-            $classe='';
-            $sql = "select * from mensagem where leitura = 'N' ";
-            $consulta = $pdo->prepare($sql);
-            $consulta->execute();
-            $dados = $consulta->fetch(PDO::FETCH_OBJ);
-            
-            if( $dados->leitura ) $classe= "badge-danger";
-            ?>
-                <span class="badge <?=$classe;?> badge-counter">
+                <span class="badge badge-danger badge-counter"><?=$mensagens->registros;?>
                   </span>
               </a>
+
+            
               <!-- Dropdown - Messages -->
               <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="messagesDropdown">
                 <h6 class="dropdown-header">
                   Mensagens
                 </h6>
+          <?php
+            $sql = "SELECT * FROM mensagem WHERE leitura = 'N' limit 5" ;
+            $consulta = $pdo->prepare($sql);
+            $consulta->execute();
+            while($dados = $consulta->fetch(PDO::FETCH_OBJ)){
+                
+              ?>
                 <a class="dropdown-item d-flex align-items-center" href="#">
                   <div class="dropdown-list-image mr-3">
                     <div class="status-indicator bg-success"></div>
                   </div>
                   <div class="font-weight-bold">
-                    <div class="text-truncate"><?=$dados->nome;?></div>
-                    <div class="small text-gray-500"><?=$dados->mensagem;?></div>
+                    <div class="text-truncate"><?=$dados->nome?></div>
+                    <div class="small text-gray-500"><?=$dados->mensagem?></div>
                   </div>
                 </a>
-                <a class="dropdown-item text-center small text-gray-500" href="#">Read More Messages</a>
+        <?php  
+            }
+            
+            ?>
+                <a class="dropdown-item text-center small text-gray-500" href="#">Ler mensagens</a>
               </div>
             </li>
 
@@ -278,6 +287,9 @@
 		        	//verificar se o id ou o 3 item existe
 		        	if ( isset ( $p[2] ) )
 		        		$id = $p[2];
+                    
+                    if(isset($p[3]))
+                        $pc = $p[3];
 		        }
 
 		        //verificar se a pagina existe
@@ -345,7 +357,7 @@
           </div>
             <?php
         		
-				$sql = "select * from usuario where id =".$_SESSION["tcc"]["id"] ;
+				$sql = "select * from colaborador where codigo =".$_SESSION["tcc"]["id"] ;
 
 				$consulta = $pdo->prepare($sql);
 				$consulta->execute();
@@ -402,7 +414,7 @@
       <footer class="sticky-footer bg-white">
         <div class="container my-auto">
           <div class="copyright text-center my-auto">
-            <span>Copyright &copy; Website 2020</span>
+            <span>Copyright &copy; Designed by  <a href="https://github.com/raquelmacd">Raquel</a> 2020</span>
           </div>
         </div>
       </footer>
@@ -421,8 +433,6 @@
 
 	//se esta logado
 	//mostrar home ou a pagina que esta tentando visitar
-
-
 
 	?>
 

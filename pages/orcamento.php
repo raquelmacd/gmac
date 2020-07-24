@@ -1,17 +1,34 @@
-<?php
-
-foreach ( $_SESSION["carrinho"] as $c ) {
-			
-			$id 		= 	$c["id_produto"];
-			$titulo 	=	$c["produto"];
-			$valor  	=	$c["preco"];
-			$quantidade =	$c["quantidade"];
-            $subTotal   =  $valor * $quantidade; 
-		} 
-            $total   = $total + $subTotal;
-
-?>
 
 <div class="container">
-    <iframe src="pages/pdf.php" width="1010px" height="560px" style="margin-top: 20px" ></iframe>
-</div>
+    <div></div>
+    <div class="col-9 align-self-center">   
+        <table class="table table-light"  id="orcamento">
+            <thead >
+                <tr>
+                    <td>Produto</td>
+                    <td>Quantidade</td>
+                    <td>Valor</td>
+                    <td>Total</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>ID: | </td>
+                    <td>x </td>
+                    <td></td>
+                    <td>x</td>
+                </tr>
+                
+            </tbody>
+            </table>
+    </div> 
+            <i>Impresso em : <script>document.write(new Date().toLocaleDateString());</script></i>
+            <p><strong>A validade deste orçamento é 45 dias após gerado.</strong></p>
+    
+    <button class="btn btn-info" onclick="imprimir()">Imprimir</button>
+    </div>
+<script>
+    function imprimir(){
+        window.print();
+    }
+</script>

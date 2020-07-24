@@ -6,9 +6,9 @@
 
   //verificar se existem dados no POST
   if ( $_POST ) {
-
+      include "functions.php";
   	//recuperar os dados do formulario
-  	$id =  $nome  = $valor = $img = $marca = $categoria = "";
+  	$id =  $nome  = $valor = $img = $marca = $categoria = $situacao= "";
 
   	foreach ($_POST as $key => $value) {
   		//guardar as variaveis
@@ -16,59 +16,83 @@
   		//$id
   	}
 
+      print_r($_POST);
+      print_r($_FILES);
   	//validar os campos - em branco
   	if ( empty( $valor ) ) {
   		echo '<script>alert("Preencha o valor");history.back();</script>';
   		exit;
   	}
 
-
-  	//verificar se existe um cadastro com este tipo
-  	$sql = "select produto from produtos 
-  		where produto = ? and id <> ? limit 1";
-  	//usar o pdo / prepare para executar o sql
-  	$consulta = $pdo->prepare($sql);
-  	//passando o parametro
-  	$consulta->bindParam(1, $nome);
-  	$consulta->bindParam(2, $id);
-  	//executar o sql
-  	$consulta->execute();
-  	//puxar os dados (id)
-  	$dados = $consulta->fetch(PDO::FETCH_OBJ);
-
-  	//verificar se esta vazio, se tem algo é pq existe um registro com o mesmo nome
-  	if ( !empty ( $dados->produto ) ) {
-  		echo '<script>alert("Já existe um produto registrado com este nome");history.back();</script>';
-  		exit;
-  	}
-
-  	//se o id estiver em branco - insert
-  	//se o id estiver preenchido - update
-  	if ( empty ( $id ) ) {
-  		//inserir os dados no banco
-  		$sql = "insert into produtos (produto,id_marca,descricao,preco,img,categoria)
-  		values( ?,?,'Descricao',?,?,?)";
-  		$consulta = $pdo->prepare($sql);
-  		$consulta->bindParam(1, $nome);
-  		$consulta->bindParam(2, $marca);
-        $consulta->bindParam(3,$preco);
-        $consulta->bindParam(4,$img);
-        $consulta->bindParam(5,$categoria);
-
-  	} else {
-  		//atualizar os dados  	
-  		$sql = "update rpodutos set tipo = ?, descricao = ?where id = ? limit 1";	
-  		$consulta = $pdo->prepare($sql);
-  		$consulta->bindParam(1, $tipo);
-
-  	}
-  	//executar e verificar se deu certo
-  	if ( $consulta->execute() ) {
-  		echo '<script>alert("Registro Salvo");location.href="listar/produto";</script>';
-  	} else {
-  		echo '<script>alert("Erro ao salvar");history.back();</script>';
-  		exit;
-  	}
+    //iniciar uma transacao
+    
+    $pdo->beginTransaction();    
+    
+    $valor = formatarValor($valor);
+      
+    $arquivo = time()."-".$_SESSION["tcc"]["id"];
+    
+    if(empty($id)){
+        //inserir
+        $sql= "INSERT INTO produto(descricao, marca_codigo, valor, categoria_codigo, situacao_codigo, img) VALUES (:descricao, :marca_codigo, :valor, :categoria_codigo, :situacao_codigo, :img)";
+        $consulta = $pdo->prepare($sql);
+        $consulta->bindParam(':descricao',$nome);
+        $consulta->bindParam(':marca_codigo',$marca);
+        $consulta->bindParam(':valor',$valor);
+        $consulta->bindParam(':categoria_codigo',$categoria);
+        $consulta->bindParam(':situacao_codigo',$situacao);
+        $consulta->bindParam(':img',$arquivo);
+        
+    } else{
+        //qual arquivo sera gravado
+        if(!empty( $_FILES["img"]["name"])){
+            $img = $arquivo;
+        }
+        //update
+        $sql= "UPDATE produto SET descricao = :descricao, marca_codigo = :marca_codigo, valor = :valor, categoria_codigo = :categoria_codigo, situacao_codigo = :situacao_codigo, img = :img WHERE codigo = :id ";
+        $consulta = $pdo->prepare($sql);
+        $consulta->bindParam(':descricao',$nome);
+        $consulta->bindParam(':marca_codigo',$marca);
+        $consulta->bindParam(':valor',$valor);
+        $consulta->bindParam(':categoria_codigo',$categoria);
+        $consulta->bindParam(':situacao_codigo',$situacao);
+        $consulta->bindParam(':img',$img);
+        $consulta->bindParam(':id',$id);
+    }
+    
+    if($consulta->execute()){
+        //verificar se o arquivo nao está sendo enviado 
+        if( empty($_FILES["img"]["type"]) and (!empty($id)) ){
+            //a capa deve estar vazia e ID nao estiver vazio
+            //gravar no banco 
+            $pdo->commit();
+            echo "<script>alert('Registro Salvo');location.href='listar/produto';</script>";
+            
+        }
+        //veririfcar tipo imagem
+        if($_FILES["img"]["type"]  !=  "image/jpeg"){
+            echo "<script>alert('Seleciona uma imagem Jpeg');history.back();</script>";
+            exit;
+        }
+        if ( move_uploaded_file($_FILES["img"]["tmp_name"], "../assets/storage/".$_FILES["img"]["name"])){
+            
+            $pastaFotos = "../assets/storage/";
+            $nome = $arquivo;
+            $imagem = $_FILES["img"]["name"];
+            redimensionarImagem($pastaFotos,$imagem,$nome);
+            
+            //gravar no banco - se tudo deu certo
+            $pdo->commit();
+            echo "<script>alert('Registro Salvo');location.href='listar/produto';</script>";
+        }
+        
+        //erro ao gravar
+        echo "<script>alert('Erro ao gravar no servidor');history.back();</script>";
+        exit;
+    }
+    
+    //echo consulta->errorInfo()[2];
+    exit;
 
   } else {
   	//mensagem de erro

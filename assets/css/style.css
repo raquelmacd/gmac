@@ -26,7 +26,6 @@ h1, h2, h3, h4, h5, h6 {
   font-family: "Raleway", sans-serif;
 }
 
-
 /*--------------------------------------------------------------
 # Header
 --------------------------------------------------------------*/
@@ -70,12 +69,23 @@ h1, h2, h3, h4, h5, h6 {
   margin-left: 300px;
 }
 
-@media (max-width: 1199px) {
+
+@media (max-width: 900px) {
   #header {
-    left: -300px;
+    position: relative;
+    width: auto;
+    padding-right: 20px 15px;
   }
+  #header .profile {
+    display: none;
+  }
+
   #main {
     margin-left: 0;
+  }
+  .nav-menu > ul > li {
+     position: inherit;
+     white-space: inherit ;
   }
 }
 
@@ -117,19 +127,11 @@ h1, h2, h3, h4, h5, h6 {
 
 
 /* Mobile Navigation */
-@media (min-width: 1024px) {
-  position: fixed;
-  right: 15px;
-  top: 15px;
-  z-index: 9998;
-  border: 0;
-  background: none;
-  font-size: 24px;
-  transition: all 0.4s;
-  outline: none !important;
-  line-height: 1;
-  cursor: pointer;
-  text-align: right;
+@media (max-width: 1024px) {
+    .nav-menu {
+        padding-top: 5px;
+    }
+
 }
 
 /*--------------------------------------------------------------
@@ -182,23 +184,24 @@ h1, h2, h3, h4, h5, h6 {
   border-bottom: 3px solid #149ddd;
 }
 
-@media (min-width: 1024px) {
+@media (max-width: 768px) {
   #hero {
     background-attachment: fixed;
   }
-}
-
-@media (max-width: 768px) {
+  #hero .hero-container {
+  object-position: center;
+  max-width: 100px;
+ }
+  #hero p {
+  font-size: 20px;
+ }
   #hero h1 {
-    font-size: 28px;
+    font-size: 33px;
     line-height: 36px;
   }
-  #hero h2 {
-    font-size: 18px;
-    line-height: 24px;
-    margin-bottom: 30px;
-  }
+
 }
+
 
 /*--------------------------------------------------------------
 # Sections General
@@ -267,7 +270,6 @@ section {
 /*--------------------------------------------------------------
 # Produtos
 --------------------------------------------------------------*/
-
 
 /*--------------------------------------------------------------
 # Services
@@ -377,9 +379,9 @@ section {
 # Footer
 --------------------------------------------------------------*/
 #footer {
-  padding: 15px;
+  padding: 10px;
   color: #f4f6fd;
-  font-size: 14px;
+  font-size: 9px;
   position: fixed;
   left: 0;
   bottom: 0;
@@ -395,11 +397,10 @@ section {
 #footer .credits {
   padding-top: 5px;
   text-align: center;
-  font-size: 13px;
   color: #eaebf0;
 }
 
-@media (max-width: 1199px) {
+@media (max-width: 900px) {
   #footer {
     position: static;
     width: auto;

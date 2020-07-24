@@ -24,7 +24,7 @@
 
 
   	//verificar se existe um cadastro com este tipo
-  	$sql = "select id_marca from marcas 
+  	$sql = "select codigo from marcas 
   		where marca = ? limit 1";
   	//usar o pdo / prepare para executar o sql
   	$consulta = $pdo->prepare($sql);
@@ -36,7 +36,7 @@
   	$dados = $consulta->fetch(PDO::FETCH_OBJ);
 
   	//verificar se esta vazio, se tem algo é pq existe um registro com o mesmo nome
-  	if ( !empty ( $dados->marca ) ) {
+  	if ( !empty ( $dados->codigo ) ) {
   		echo '<script>alert("Já existe uma marca com este nome");history.back();</script>';
   		exit;
   	}
@@ -45,7 +45,7 @@
   	//se o id estiver preenchido - update
   	if ( empty ( $id ) ) {
   		//inserir os dados no banco
-  		$sql = "insert into marcas (marca)
+  		$sql = "insert into marca (descricao)
   		values( ?)";
   		$consulta = $pdo->prepare($sql);
   		$consulta->bindParam(1, $marca);
@@ -53,7 +53,7 @@
 
   	} else {
   		//atualizar os dados  	
-  		$sql = "update marcas set marca = ? where id_marca = ? limit 1";	
+  		$sql = "update marca set descricao = ? where codigo = ? limit 1";	
   		$consulta = $pdo->prepare($sql);
   		$consulta->bindParam(1, $marca);
         $consulta->bindParam(2,$id);

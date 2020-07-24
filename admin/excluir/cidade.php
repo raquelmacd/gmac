@@ -10,9 +10,8 @@
     exit;
   }
 
-  	//verificar se existe vinculo com quadrinho
-    $sql = "select * from cidade 
-  		where id = ? limit 1";
+  	//verificar se existe vinculo com cliente
+    $sql = "select * from cliente where cidade_codigo = ? limit 1";
   	$consulta = $pdo->prepare($sql);
   	$consulta->bindParam(1, $id); 
   	//$id - linha 255 do index.php
@@ -25,7 +24,7 @@
     }
 
    //excluir editora
-    $sql = "delete from cidade where id = ? limit 1";
+    $sql = "delete from cidade where codigo = ? limit 1";
     $verificar = $pdo->prepare($sql);
     $verificar->bindParam(1, $id);
     //verificar se executou

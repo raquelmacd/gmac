@@ -18,3 +18,10 @@ iframe {
 .margin, label {
 	margin-top: 15px;
 }
+
+/*------------------- 
+#  Home 
+---------------------*/
+@media screen and (max-width: 900px){
+    
+} 

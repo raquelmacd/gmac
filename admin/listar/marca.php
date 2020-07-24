@@ -24,15 +24,14 @@
 		<tbody>
 			<?php
 				//buscar os servicos alfabeticamente
-				$sql = "select * from marcas where status= 'S' 
-				order by id_marca";
+				$sql = "select * from marca order by codigo";
 				$consulta = $pdo->prepare($sql);
 				$consulta->execute();
 
 				while ( $dados = $consulta->fetch(PDO::FETCH_OBJ) ) {
 					//separar os dados
-					$id 	= $dados->id_marca;
-					$marca 	= $dados->marca;
+					$id 	= $dados->codigo;
+					$marca 	= $dados->descricao;
 
 
 					//mostrar na tela

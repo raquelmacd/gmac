@@ -122,3 +122,18 @@
 		//apagar a imagem antiga
 		unlink ($imagem);
 	}
+
+/*****
+//funcao para foramtar valor
+
+****/
+    function formatarValor($valor){
+        // 12.000,00 -> 12000.00
+        //primeiro troca o ponto
+        $valor = str_replace(".","",$valor);
+        //depois troca a virgula em ponto
+        $valor = str_replace(",",".",$valor);
+        
+        return $valor;
+        
+    }

@@ -28,32 +28,31 @@
 		<tbody>
 			<?php
 				//buscar os servicos alfabeticamente
-				$sql = "select cliente.id,cliente.nome,cliente.cpf,cliente.cep,cliente.endereco,cliente.complemento,cliente.bairro,cliente.email,cliente.foto,cidade.cidade,cidade.estado FROM cliente INNER JOIN cidade ON cliente.cidade_id= cidade.id";
+				$sql = "select cliente.*,cidade.cidade,cidade.estado FROM cliente 
+                INNER JOIN cidade ON cliente.cidade_codigo = cidade.codigo";
 				$consulta = $pdo->prepare($sql);
 				$consulta->execute();
 
 				while ( $dados = $consulta->fetch(PDO::FETCH_OBJ) ) {
 					//separar os dados
-					$id 	= $dados->id;
+					$id 	= $dados->codigo;
 					$nome 	= $dados->nome;
                     $cpf = $dados->cpf;
                     $cep = $dados->cep;
                     $endereco = $dados->endereco;
-                    $complemento = $dados->complemento;
                     $bairro = $dados->bairro;
                     $cidade = $dados->cidade;
                     $estado = $dados->estado;
                     $email = $dados->email;
-                    $foto = $dados->foto;
 
 					//mostrar na tela
 					echo '<tr>
 						<td>'.$id.'</td>
 						<td>'.$nome.'</td>
                         <td>'.$cpf.'</td>
-                        <td>'.$endereco.','.$complemento.','.$bairro.' - '.$cidade.'/'.$estado.'</td>
+                        <td>'.$endereco.','.$bairro.' - '.$cidade.'/'.$estado.'</td>
 						<td>'.$email.'</td>
-                        <td>'.$foto.'</td>
+                        <td></td>
                         <td>
 							<a href="cadastro/cliente/'.$id.'" class="btn btn-success btn-sm">
 								<i class="fas fa-pencil-alt"></i>

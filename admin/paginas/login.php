@@ -24,20 +24,21 @@
       $msg = '<p class="alert alert-danger">Preencha o campo Senha</p>';
     else {
       //verificar se o login existe
-      $sql = "select id, nome, login, senha from usuario where login = ? limit 1";
+      $sql = "select * from colaborador where (login = ? or email = ?) and situacao_codigo = 1 limit 1";
       //apontar a conexao com o banco
       //preparar o sql para execução
       $consulta = $pdo->prepare($sql);
       //passar o parametro para o sql
       $consulta->bindParam(1, $login);
+        $consulta->bindParam(2, $login);
       //executar o sql
       $consulta->execute();
       //puxar os dados do resultado
       $dados = $consulta->fetch(PDO::FETCH_OBJ);
 
       //verificar se existe usuario
-      if ( empty ( $dados->id ) ) 
-        $msg = '<p class="alert alert-danger">O usuário ou senha incorretos!</p>';
+      if ( empty ( $dados->codigo ) ) 
+        $msg = '<p class="alert alert-danger">Dados incorretos ou o usuário está bloqueado.</p>';
       //verificar se a senha esta correta
       else if ( !password_verify($senha, $dados->senha) )
         $msg = '<p class="alert alert-danger">O usuário ou senha incorretos</p>';
@@ -45,7 +46,7 @@
       else {
         //registrar este usuário na sessao
         $_SESSION["tcc"] = 
-          array("id"  => $dados->id,
+          array("id"  => $dados->codigo,
                 "nome"=> $dados->nome);
         //redirecionar para o home
         $msg = 'Deu certo!';
@@ -78,23 +79,11 @@
                   <?=$msg;?>
                   <form class="user" name="login" method="post" data-parsley-validate>
                     <div class="form-group">
-                      <input type="text" 
-                      name="login" 
-                      class="form-control form-control-user" id="login" placeholder="Digite o seu login" required
-                      data-parsley-required-message="Preencha o Login">
+                      <input type="text" name="login" class="form-control form-control-user" id="login" placeholder="Digite o seu login ou email" required data-parsley-required-message="Preencha com o email ou login">
 
                     </div>
                     <div class="form-group">
-                      <input type="password"
-                      name="senha" 
-                      class="form-control form-control-user" id="senha" placeholder="Digite sua senha" required
-                      data-parsley-required-message="Preencha a senha">
-                    </div>
-                    <div class="form-group">
-                      <div class="custom-control custom-checkbox small">
-                        <input type="checkbox" class="custom-control-input" id="lembrar">
-                        <label class="custom-control-label" for="lembrar">Lembrar meu login</label>
-                      </div>
+                      <input type="password" name="senha" class="form-control form-control-user" id="senha" placeholder="Digite sua senha" required data-parsley-required-message="Preencha a senha">
                     </div>
                     <button type="submit" class="btn btn-outline-primary btn-user btn-block">
                       Login

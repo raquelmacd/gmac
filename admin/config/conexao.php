@@ -9,7 +9,7 @@
 	$senha = "";
 
 	//nome do banco de dados
-	$banco = "tcc";
+	$banco = "gabriel";
 
 	try {
 		//criar uma conexao com PDO

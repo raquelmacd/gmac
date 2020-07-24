@@ -30,16 +30,17 @@
 		<tbody id="myTable">
 			<?php
 				//buscar as editoras alfabeticamente
-				$sql = "SELECT p.id_produto,p.produto,p.id_marca,p.descricao,p.preco,p.categoria,p.img,m.id_marca,m.marca FROM produtos AS p INNER JOIN marcas AS m ON p.id_marca=m.id_marca";
+				$sql = "SELECT p.codigo,p.descricao,p.marca_codigo,p.valor,p.categoria_codigo,p.img,m.descricao as marca, c.descricao as categoria FROM produto AS p INNER JOIN marca AS m ON p.marca_codigo=m.codigo 
+                INNER JOIN categoria as c ON p.categoria_codigo = c.codigo";
 				$consulta = $pdo->prepare($sql);
 				$consulta->execute();
 
 				while ( $dados = $consulta->fetch(PDO::FETCH_OBJ) ) {
 					//separar os dados
-					$id 	= $dados->id_produto;
-					$titulo = $dados->produto;
+					$id 	= $dados->codigo;
+					$titulo = $dados->descricao;
                     $marca = $dados->marca;
-                    $valor = $dados->preco;
+                    $valor = $dados->valor;
                     $capa = $dados->img;
                     $valor = number_format($valor,2,",",".");
                     $categoria = $dados->categoria;
@@ -54,7 +55,7 @@
 							<a href="cadastro/produto/'.$id.'" class="btn btn-success btn-sm">
 								<i class="fas fa-pencil-alt"></i>
 							</a>
-							<a class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#staticBackdrop">
+							<a class="btn btn-outline-danger btn-sm" href="javascript:excluir('.$id.')" >
 								<i class="fas fa-trash"></i>
 							</a>
 						</td>
@@ -66,6 +67,7 @@
 
 </div>
     <!-- Modal -->
+<!--
     <div class="modal fade" id="staticBackdrop" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -80,12 +82,13 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-outline-danger" href="excluir/produto/<?=$id?>">Excluir</button>
+            <a class="btn btn-outline-danger" 
+               >Excluir</a>
           </div>
         </div>
       </div>
-    </div>
-<script>
+    </div>-->
+<script> 
 $(document).ready(function(){
   $("#myInput").on("keyup", function() {
     var value = $(this).val().toLowerCase();
@@ -94,4 +97,11 @@ $(document).ready(function(){
     });
   });
 });
+   	function excluir(id){
+
+		if (confirm("Deseja mesmo excluir? ")) {
+			//ir para exclusao
+			location.href="excluir/produto/"+id;
+		}
+	}
 </script>

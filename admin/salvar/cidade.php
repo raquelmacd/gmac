@@ -20,12 +20,14 @@
   	if ( empty ( $cidade ) ) {
   		echo '<script>alert("Preencha a cidade");history.back();</script>';
   		exit;
-  	}
+  	} else if(empty($estado)){
+        echo '<script>alert("Preencha o estado");history.back();</script>';
+  		exit;
+    }
 
       
   	//verificar se existe um cadastro com este tipo
-  	$sql = "select id from marcas 
-  		where cidade = ? limit 1";
+  	$sql = "select codigo from cidade where cidade = ? limit 1";
   	//usar o pdo / prepare para executar o sql
   	$consulta = $pdo->prepare($sql);
   	//passando o parametro
@@ -44,13 +46,13 @@
   	//se o id estiver em branco - insert
   	//se o id estiver preenchido - update
   	if ( empty ( $id ) ) {
-        $max = "select max(id) as maxId from cidade";
+        $max = "select max(codigo) as maxId from cidade";
         $consulta = $pdo->prepare($max);
         $consulta->execute();
         $result = $consulta->fetch(PDO::FETCH_OBJ);
         $proximo = $result->maxId + 1 ;
         //inserir os dados no banco
-  		$sql = "insert into cidade (id,cidade,estado)
+  		$sql = "insert into cidade (codigo,cidade,estado)
   		values(?,?,?)";
   		$consulta = $pdo->prepare($sql);
         $consulta->bindParam(1,$proximo);
@@ -60,7 +62,7 @@
 
   	} else {
   		//atualizar os dados  	
-  		$sql = "update cidade set cidade = ?, estado = ?  where id = ? limit 1";	
+  		$sql = "update cidade set cidade = ?, estado = ?  where codigo = ? limit 1";	
   		$consulta = $pdo->prepare($sql);
   		$consulta->bindParam(1, $cidade);
         $consulta->bindParam(2, $estado);

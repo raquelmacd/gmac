@@ -13,8 +13,8 @@
   //verificar se existe um id
   if ( !empty ( $id ) ) {
   	//selecionar os dados do banco
-  	$sql = "select * from usuario 
-  		where id = ? limit 1";
+  	$sql = "select * from colaborador 
+  		where codigo = ? limit 1";
   	$consulta = $pdo->prepare($sql);
   	$consulta->bindParam(1, $id); 
   	//$id - linha 255 do index.php
@@ -22,7 +22,7 @@
   	$dados  = $consulta->fetch(PDO::FETCH_OBJ);
 
   	//separar os dados
-  	$id 	= $dados->id;
+  	$id 	= $dados->codigo;
   	$nome 	= $dados->nome;
   	$senha 	= $dados->senha;
     $email = $dados->email;
@@ -42,7 +42,7 @@
 	<form name="formCadastro" method="post" action="salvar/usuario" data-parsley-validate>
 
 		<label for="id">ID</label>
-		<input type="text" name="id" id="id"	class="form-control" readonly	value="<?=$id;?>">
+		<input type="text" name="id" id="id" class="form-control" readonly	value="<?=$id;?>">
 
 		<label for="nome">Nome do Usuário</label>
 		<input type="text" name="nome" id="nome" class="form-control" required	data-parsley-required-message="Preencha este campo, por favor"	value="<?=$nome;?>">

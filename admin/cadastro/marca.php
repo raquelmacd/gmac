@@ -13,8 +13,8 @@
   //verificar se existe um id
   if ( !empty ( $id ) ) {
   	//selecionar os dados do banco
-  	$sql = "select * from marcas
-  		where id_marca = ? limit 1";
+  	$sql = "select * from marca
+  		where codigo = ? limit 1";
   	$consulta = $pdo->prepare($sql);
   	$consulta->bindParam(1, $id); 
   	//$id - linha 255 do index.php
@@ -22,8 +22,8 @@
   	$dados  = $consulta->fetch(PDO::FETCH_OBJ);
 
   	//separar os dados
-  	$id 	= $dados->id_marca;
-  	$marca = $dados->marca;
+  	$id 	= $dados->codigo;
+  	$marca = $dados->descricao;
 
   } 
 ?>

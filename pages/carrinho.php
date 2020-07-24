@@ -11,19 +11,19 @@ if ( $op == "add" ) {
             $_SESSION["carrinho"][$p[2]]["quantidade"] = $_SESSION["carrinho"][$p[2]]["quantidade"] + 1;
             //print_r($_SESSION["carrinho"][$p[2]]);
         }
-		$sql = "select id_produto, produto, preco from produtos where id_produto = ? limit 1";
+		$sql = "select codigo, descricao, valor from produto where codigo = ? limit 1";
 		$consulta = $pdo->prepare($sql);
 		$consulta->bindParam(1, $produto, PDO::PARAM_INT);
 		$consulta->execute();
 		$linha 	= $consulta->fetch(PDO::FETCH_OBJ);
 
-		if ( isset ( $linha->id_produto ) ) { 
-			$id 	= 	$linha->id_produto;
-			$produto =	$linha->produto;
-			$valor  =	$linha->preco;
+		if ( isset ( $linha->codigo ) ) { 
+			$id 	= 	$linha->codigo;
+			$produto =	$linha->descricao;
+			$valor  =	$linha->valor;
             
             
-			$_SESSION["carrinho"][$id] = array("id_produto"=>$id, "produto"=>$produto, "preco"=>$valor, "quantidade"=>1);
+			$_SESSION["carrinho"][$id] = array("codigo"=>$id, "descricao"=>$produto, "valor"=>$valor, "quantidade"=>1);
             //print_r($_SESSION["carrinho"][$id]);
 		}
 
@@ -52,10 +52,11 @@ if ( $op == "add" ) {
         <div class="section-title">
             <h2>Carrinho de Orçamento</h2>
         </div>
-        <div class="col-lg-12 col-md-12 icon-box" ng-app="" >
+        <div class="col-lg-12 col-md-12 icon-box">
 <?php
 	if ( isset ( $_SESSION["carrinho"] ) ) {
 		?>
+		<form method="post" action="orcamento">  
 		<table class="table table-bordered table-striped">
 			<thead>
 				<tr>
@@ -70,9 +71,9 @@ if ( $op == "add" ) {
         $qtdeTotal = 0;
             foreach ( $_SESSION["carrinho"] as $c ) {
 
-                $id 		= 	$c["id_produto"];
-                $titulo 	=	$c["produto"];
-                $valor  	=	$c["preco"];
+                $id 		= 	$c["codigo"];
+                $titulo 	=	$c["descricao"];
+                $valor  	=	$c["valor"];
                 $quantidade =	$c["quantidade"];
                 $subTotal   =  $valor * $quantidade;
 
@@ -80,14 +81,16 @@ if ( $op == "add" ) {
                 echo "<tr>
                     <td>$titulo</td>
                     <td>
-                        <input type='text' value='$quantidade' class='form-control' readonly >
+                        <input type='text' value='$quantidade' class='form-control' readonly name 
+                        ='quantidade'>
                     </td>
-                    <td><a onclick='add(".$c["id_produto"].")' class='btn'><i class='bx bxs-plus-circle'></i></a>
-                        <a onclick='subtrair(".$c["id_produto"].")' class='btn'><i class='bx bxs-minus-circle'></i></a></td>
+                    <td><a  class='btn' href='javascript:add(".$c["codigo"].")'><i class='bx bxs-plus-circle'></i></a>
+                        <a  class='btn' href='javascript:subtrair(".$c["codigo"].")'><i class='bx bxs-minus-circle'></i></a></td>
                     <td><a href='carrinho/del/$id' class='btn btn-danger'>Excluir</a></td>
-                </tr>";
-                $qtdeTotal = $qtdeTotal + $quantidade;
-                $total   = $total + $subTotal;
+                </tr>
+                ";
+                $qtdeTotal +=  $quantidade;
+                $total   += $subTotal;
             } 
                 $total = number_format($total, 2, ",", ".");
 
@@ -99,7 +102,6 @@ if ( $op == "add" ) {
 				</tr>
 			</tfoot>
 		</table>
-		<form method="post" action="orcamento">  
 	        <a href="carrinho/limpar" class="btn btn-danger">Limpar Carrinho</a>
 	        <button type="submit" class="btn btn-success">Realizar Orçamento</button>
 		</form>
@@ -113,13 +115,14 @@ if ( $op == "add" ) {
     </div>
 </section>
 <script>
+    const orcamentos = 1;
 function add(produto){
     
     location.href="carrinho/quantidade/"+produto;
     
 }
 function subtrair(produto){
+
         location.href="carrinho/retirar/"+produto;
 }
-
 </script>
