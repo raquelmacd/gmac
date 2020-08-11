@@ -22,7 +22,6 @@ if(empty($dados->codigo)){
 } else $msg = 1;
 
 }
-
 ?>
 <style>
     fieldset {
@@ -65,7 +64,7 @@ if(empty($dados->codigo)){
                    <?php 
                     if($msg == 1) {
                         ?>
-<fieldset>
+
 <legend>Ordem N° <?=$id;?></legend>
 <div class="container">
 
@@ -73,7 +72,7 @@ if(empty($dados->codigo)){
   <thead>
     <tr>
       <td scope='col'>Produtos</td>
-      <td scope='col'>Valor</td>
+      <td scope='col'>Valor R$</td>
       <td scope='col'>Qtde</td>
       <td scope='col'>Total</td>
     </tr>
@@ -87,6 +86,7 @@ if(empty($dados->codigo)){
       $ordemprodutos->bindParam(":ordem",$id);
       $ordemprodutos->execute();
       $totalprodutos = 0;
+      $descontosprodutos = 0;
       while ($produtos = $ordemprodutos->fetch(PDO::FETCH_OBJ)){
         ?>
     <tr>
@@ -97,10 +97,12 @@ if(empty($dados->codigo)){
     </tr>
       <?php
           $totalprodutos += $produtos->valorTotal;
+          $descontosprodutos += $produtos->valorDesc;
       }
       ?>
       <tr>
-      <td scope='row' colspan="3">Total dos Produtos</td>
+      <td scope='row' colspan="2">Total dos Produtos</td>
+      <td>Descontos <?php echo number_format($descontosprodutos,2,",",".");?></td>
       <td> R$ <?php echo number_format($totalprodutos,2,",",".");?></td>
       </tr>
   </tbody>
@@ -109,7 +111,7 @@ if(empty($dados->codigo)){
   <thead>
     <tr>
       <td scope='col'>Serviços</td>
-      <td scope='col'>Valor</td>
+      <td scope='col'>Valor R$</td>
       <td scope='col'>Qtde</td>
       <td scope='col'>Total</td>
     </tr>
@@ -123,6 +125,7 @@ if(empty($dados->codigo)){
       $ordemservicos->bindParam(":ordem",$id);
       $ordemservicos->execute();
       $totalservicos = 0;
+      $descontoservicos = 0;
       while ($servicos = $ordemservicos->fetch(PDO::FETCH_OBJ)){
         ?>
     <tr>
@@ -133,16 +136,20 @@ if(empty($dados->codigo)){
     </tr>
       <?php
           $totalservicos += $servicos->valorTotal;
+          $descontoservicos += $servicos->valorDesc;
       }
       ?>
       <tr>
-        <td scope='row' colspan="3">Total dos Serviços</td>
+        <td scope='row' colspan="2">Total dos Serviços</td>
+        <td>Descontos <?php echo number_format($descontoservicos,2,",",".");?></td>
         <td> R$ <?php echo number_format($totalservicos,2,",",".");?></td>
       </tr>
       <br>
       <tr>
-        <th colspan="3">Total do Orçamento</th>
-<?php $totalOrcamento = $totalservicos + $totalprodutos;?>
+        <th colspan="2">Total do Orçamento</th>
+<?php $totalOrcamento = $totalservicos + $totalprodutos;
+          $totalDescontos = $descontoservicos + $descontosprodutos;?>
+          <td>Descontos Totais R$ <?php echo number_format($totalDescontos,2,",",".");?></td>
           <th>R$ <?php echo number_format($totalOrcamento,2,",",".");?></th>
       </tr>
   </tbody>
@@ -154,7 +161,7 @@ if(empty($dados->codigo)){
 <?php } ?>
     
 </div>
-</fieldset>
+
 <!-- Modal REJEITAR -->
     <div class="modal fade" id="rejeitar" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
@@ -166,12 +173,12 @@ if(empty($dados->codigo)){
             </button>
           </div>
           <div class="modal-body">
-            Deseja mesmo rejeitar orçamento??<br>
+            Deseja mesmo rejeitar orçamento?<br>
             OBS.: Após rejeição, não poderá mais alterar. 
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
-            <a type="button" class="btn btn-outline-danger" href="rejeitar?ordem=<?=$id;?>">Rejeitar Orçamento</a>
+            <a class="btn btn-outline-danger" href="javascript:rejeitar(<?=$id;?>)">Rejeitar</a>
           </div>
         </div>
       </div>
@@ -181,19 +188,27 @@ if(empty($dados->codigo)){
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="staticBackdropLabel">Aprovar!</h5>
+            <h5 class="modal-title" id="staticBackdropLabel">Opaa!</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body">
-            Deseja aprovar o orçamento??<br>
+            Deseja aprovar o orçamento?<br>
             OBS.: Após confirmar, não poderá mais alterar. 
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
-            <a class="btn btn-outline-success" href="aprovar?ordem=<?=$id;?>" >Confirmar</a>
+              <a  class="btn btn-outline-success"  href="javascript:aprovar(<?=$id;?>)" >Confirmar</a>
           </div>
         </div>
       </div>
     </div>
+<script>
+    function rejeitar(codigo){
+        location.href="rejeitar/?ordem="+codigo;
+    }
+    function aprovar(codigo){
+        location.href="aprovar/ordem="+codigo;
+    }
+</script>

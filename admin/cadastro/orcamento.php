@@ -62,6 +62,7 @@ $id = $operacao= $cliente = "";
                 <label for="observacao">Observação</label>
                 <textarea rows="3" class="form-control"></textarea>
             </div>
+            <!--  PRODUTOS  E SERVICOS TAB -->
             <ul class="nav nav-tabs" id="myTab" role="tablist">
               <li class="nav-item">
                 <a class="nav-link active" id="produto-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Produtos</a>
@@ -95,7 +96,7 @@ $id = $operacao= $cliente = "";
                     </div>
                     <div class="col-md-3">
                         <label for="quantidade">Quantidade</label>
-                        <input type="text" name="quantidade" id="quantidade" class="form-control" value="1" onblur="adicionar(this.value,1)">
+                        <input type="text" name="quantidade" id="quantidade" class="form-control" value="1" onblur="somarProduto(this.value)">
                     </div>
                     <div class="col-md-3">
                         <label for="valor">Valor</label>
@@ -137,7 +138,7 @@ $id = $operacao= $cliente = "";
                     </div>
                     <div class="col-md-3">
                         <label for="servQtde">Quantidade</label>
-                        <input type="text" name="servQtde" id="servQtde" class="form-control" value="1" onfocus="adicionar(1,this.value)">
+                        <input type="text" name="servQtde" id="servQtde" class="form-control" value="1" onblur="somarServico(this.value)">
                     </div>
                     <div class="col-md-3">
                         <label for="servalor">Valor</label>
@@ -154,7 +155,6 @@ $id = $operacao= $cliente = "";
                     </div>
                 </div>
                 </div> <!--FIM  Servico TAb -->
-              <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div>
             </div>
             <div class="col-md-12 row">
                 <div class="col-md-3">
@@ -196,11 +196,18 @@ $id = $operacao= $cliente = "";
                 $("#servalor").val(dados);
         })
     }
-    function adicionar(pqtde,sqtde){
+    function somarProduto(pqtde){
         var valor = $("#valor").val();
-        var valorServico = $("#servalor").val();
         $("#subtotal").val(valor * pqtde);
+    }
+    function somarServico(sqtde){
+        var valorServico = $("#servalor").val();
         $("#sersubtotal").val(valorServico * sqtde);
     }
+    $("#total").focus(function(){
+        var tpro = $("#totalProduto").val($("#subtotal").val());
+        var tser = $("#totalServico").val($("#sersubtotal").val());
+        $("#total").val(parseInt(tpro) + parseInt(tser));
+    })
     
 </script>

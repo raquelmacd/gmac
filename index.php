@@ -73,7 +73,7 @@
 
  <!-- Template Main CSS File -->
     <link href="assets/css/style.css" rel="stylesheet">
-
+     <script src="assets/js/jquery-3.5.1.min.js"></script>
   <!-- =======================================================
   * Template Name: iPortfolio - v1.1.0
   * Template URL: https://bootstrapmade.com/iportfolio-bootstrap-portfolio-websites-template/
@@ -84,27 +84,29 @@
 
 <body>
 <!-- ======= Header ======= -->
-<header id="header">
+<header id="header" class="text-center">
     <div class="d-flex flex-column">
       <div class="profile">
-        <img src="assets/img/profile.jpg" alt="" class="img-fluid rounded-circle">
-        <h1 class="text-light"><a href="home">Gmac</a></h1>
+        <h1 class="text-light"><a href="home"><i class='bx bx-game'></i>mac</a></h1>
       </div>
 
     <nav class="nav-menu">
-        <ul>
+        <button id="down" class="btn btn-lg"><i class='bx bx-chevron-down-circle' style="font-size:65px"></i></button>
+        <button id="up" class="btn btn-lg"><i class='bx bx-chevron-up-circle' style="font-size:65px" ></i></button>
+        <ul id="listaMenu">
             <li><a href="home" class="dropdown-item"><i class="bx bx-home"></i> Home</a></li>
-            <li><a href="sobre" class="dropdown-item"><i class="bx bx-user"></i> Sobre</a></li>
+            <li><a href="sobre" class="dropdown-item"><i class='bx bx-message-rounded-detail'></i> Sobre</a></li>
             <li><a href="produtos" class="dropdown-item"><i class="bx bx-book-content"></i> Produtos</a></li>
             <li><a href="servicos" class="dropdown-item"><i class="bx bx-server"></i> Serviços</a></li>
             <li><a href="contato" class="dropdown-item"><i class="bx bx-envelope"></i> Contato</a></li>
             <li><a href="carrinho" class="dropdown-item"><i class="bx bx-cart"></i> Carrinho de Orçamento</a></li>
+            <li><a href="javascript:cliente()" class="dropdown-item"><i class='bx bx-user'></i>Área do Cliente</a></li>
         </ul>
     </nav>
    </div>
 </header><!-- End Header -->
   
-<main id="main"> 
+<main id="main">
     <?php 
     //conexao com o banco
         include "admin/config/conexao.php";
@@ -134,9 +136,34 @@
     </div>
   </footer><!-- End  Footer -->
     <script type="text/javascript">
+        
     var width = screen.width;
-        if(width >= 800){
+        function mostrarMenu(){
+            $("#listaMenu").show();
+            $("#up").show();
+            $("#down").hide();
+        }
+        function esconderMenu(){
+            $("#listaMenu").hide(5000);
+            $("#up").hide();
+            $("#down").show();
+        }
+        $(function(){
+            if(width >= 800){
+                $("#up").hide();
+                $("#down").hide();
+            } else{
+                $("#up").hide();
+                $("#listaMenu").hide();
+                $("#down").show();
+            }
             
+            $("#down").on("click", mostrarMenu);
+            $("#up").on("click", esconderMenu);
+            
+        })
+        function cliente(){
+            const abrir = window.open("client/index.php", "_self");
         }
     </script>
     
@@ -151,7 +178,7 @@
   <!-- Template Main JS File -->
   <script src="assets/js/main.js"></script>
     <!--CARRINHO  jQuery primeiro, depois Popper.js, depois Bootstrap JS -->
-    <script src="assets/js/jquery-3.5.1.min.js"></script>
+   
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
